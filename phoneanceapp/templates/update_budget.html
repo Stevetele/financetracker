@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+<main>
+    {% block content %}
+<div class="container py-5">
+    <h3 class="text-center">Update Budget</h3>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <label for="add-budget">Add budget</label><br>
+        <input type="number" ><br>
+        <label for="duration">Duration</label><br>
+        <select name="duration" id="duration">
+        <option value="day">Day</option>
+        <option value="week">Week</option>
+        <option value="fortnight">Fortnight</option>
+        <option value="month">Month</option></select>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+</div>
+{% endblock %}
+</main>

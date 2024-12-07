@@ -1,0 +1,235 @@
+{% load static %}
+<!doctype html>   
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="icon" href="{% static 'images/logo.png' %}" >
+    <title>Phoneance App</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'home' %}">Home</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-link active" aria-current="page" href="{% url 'add_income' %}">Add income</a>
+        <a class="nav-link" href="{% url 'add_expense' %}">Add expense</a>
+        <a class="nav-link" href="{% url 'add_budget' %}">Set budget</a>
+        <a class="nav-link disabled" aria-disabled="true">Your pocket financial tracker</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="{% static 'images/flit.jpg' %}" class="d-block w-100" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="{% static 'images/Scope-of-Financial-Management.jpg' %}" class="d-block w-100" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="{% static 'images/images.jpeg' %}" class="d-block w-100" alt="...">
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+<main>
+
+
+{% block content %}
+<div class="row g-4">
+    <!-- Income Card -->
+    <div class="col-md-4">
+        <div class="card bg-success text-white shadow h-100">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h6>Total Income</h6>
+                    <h2>Ksh{{ total_income }}</h2>
+                </div>
+                <i class="bi bi-currency-dollar display-1"></i>
+            </div>
+        </div>
+    </div>
+    <!-- Expenses Card -->
+    <div class="col-md-4">
+        <div class="card bg-danger text-white shadow h-100">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h6>Total Expenses</h6>
+                    <h2>Ksh{{ total_expense }}</h2>
+                </div>
+                <i class="bi bi-wallet2 display-1"></i>
+            </div>
+        </div>
+    </div>
+    <!-- Budget Card -->
+    <div class="col-md-4">
+        <div class="card bg-primary text-white shadow h-100">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h6>Remaining Budget</h6>
+                    <h2>Ksh{{ remaining_budget }}</h2>
+                </div>
+                <i class="bi bi-bar-chart-line-fill display-1"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Action Buttons -->
+<div class="row mt-4">
+    <div class="col d-flex justify-content-center gap-3">
+        <button class="btn btn-success btn-lg shadow" data-bs-toggle="modal" data-bs-target="#addIncomeModal">
+            <i class="bi bi-plus-circle"></i> Add Income
+        </button>
+        <button class="btn btn-danger btn-lg shadow" data-bs-toggle="modal" data-bs-target="#addExpenseModal">
+            <i class="bi bi-dash-circle"></i> Add Expense
+        </button>
+        <button class="btn btn-primary btn-lg shadow" data-bs-toggle="modal" data-bs-target="#addBudgetModal">
+            <i class="bi bi-cash-stack"></i> Set Budget
+        </button>
+    </div>
+</div>
+
+<!-- Chart Section -->
+<div class="row mt-4">
+    <div class="col">
+        <div class="card shadow">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">Transactions Overview</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="transactionsChart" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Income Modal -->
+<div class="modal fade" id="addIncomeModal" tabindex="-1" aria-labelledby="addIncomeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="addIncomeModalLabel">Add Income</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{% url 'add_income' %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                     <label for="add-income">Add Income</label><br>
+                     <input type="number" placeholder="e.g Ksh1,000,000" step="10,000.00" class="vBigIntegerField"><br>
+                     <label for="interval">Interval of income</label>
+                     <select name="interval" id="interval">
+                     <option value="day">Day</option>
+                     <option value="week">Week</option>
+                     <option value="fortnight">Fortnight</option>
+                     <option value="month">Month</option></select>
+                    <button type="submit" class="btn btn-success w-100">Save Income</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Expense Modal -->
+<div class="modal fade" id="addExpenseModal" tabindex="-1" aria-labelledby="addExpenseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="addExpenseModalLabel">Add Expense</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{% url 'add_expense' %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                     <label for="add-expense">Add Expense</label><br>
+                     <input type="number" placeholder="e.g Ksh1000" step="100.00"><br>
+                     <label for="category">Category</label><br>
+                     <select name="category" id="category">
+                     <option value="food">food</option>
+                     <option value="entertainment">entertainment</option>
+                     <option value="housing">housing</option>
+                     <option value="utilities">utility</option>
+                     <option value="personal">personal</option>
+                     <option value="other" class="vTextField">Other</option></select>
+                    <button type="submit" class="btn btn-danger w-100">Save Expense</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Budget Modal -->
+<div class="modal fade" id="addBudgetModal" tabindex="-1" aria-labelledby="addBudgetModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="addBudgetModalLabel">Set Budget</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{% url 'add_budget' %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <label for="add-budget">Add budget</label><br>
+                    <input type="number" step="1000" ><br>
+                    <label for="duration">Duration</label><br>
+                    <select name="duration" id="duration">
+                    <option value="day">Day</option>
+                    <option value="week">Week</option>
+                    <option value="fortnight">Fortnight</option>
+                    <option value="month">Month</option></select>
+                    <button type="submit" class="btn btn-primary w-100">Save Budget</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    const ctx = document.getElementById('transactionsChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Income', 'Expenses'],
+            datasets: [{
+                label: 'Amount',
+                data: [{{ total_income }}, {{ total_expense }}],
+                backgroundColor: ['#28a745', '#dc3545']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+</script>
+{% endblock %}
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+</body>
+</html>

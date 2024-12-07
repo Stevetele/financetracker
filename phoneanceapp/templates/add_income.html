@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+<main>
+ {% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-success text-white text-center">
+                    <h4><i class="bi bi-currency-dollar"></i> Add Income</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{% url 'add_income' %}">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                         <label for="add-income">Add Income</label><br>
+                         <input type="number" placeholder="e.g Ksh1,000,000" class="vBigIntegerField"><br>
+                         <label for="interval">Interval of income</label>
+                        <select name="interval" id="interval">
+                        <option value="day">Day</option>
+                        <option value="week">Week</option>
+                        <option value="fortnight">Fortnight</option>
+                        <option value="month">Month</option></select>
+                        <button type="submit" class="btn btn-success w-100 mt-3">
+                            <i class="bi bi-check-circle"></i> Save Income
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+</main>
+

@@ -1,0 +1,39 @@
+
+{% extends 'base.html' %}
+
+<main>
+   {% block content %}
+ <div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-danger text-white text-center">
+                    <h4><i class="bi bi-wallet2"></i> Add Expense</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{% url 'add_expense' %}">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <label for="add-expense">Add Expense</label><br>
+                        <input type="number" placeholder="e.g Ksh1000"><br>
+                        <label for="category">Category</label><br>
+                        <select name="category" id="category">
+                        <option value="food">food</option>
+                        <option value="entertainment">entertainment</option>
+                        <option value="housing">housing</option>
+                        <option value="utilities">utility</option>
+                        <option value="personal">personal</option>
+                        <option value="other" class="vTextField">Other</option></select>
+                        <button type="submit" class="btn btn-danger w-100 mt-3">
+                            <i class="bi bi-check-circle"></i> Save Expense
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+</main>
+
+

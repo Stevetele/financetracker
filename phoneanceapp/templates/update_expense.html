@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+<main>
+    {% block content %}
+<div class="container py-5">
+    <h3 class="text-center">Update Expense</h3>
+    <form method=POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <label for="add-expense">Add Expense</label><br>
+        <input type="number" placeholder="e.g Ksh1000"><br>
+        <label for="category">Category</label><br>
+        <select name="category" id="category">
+        <option value="food">food</option>
+        <option value="entertainment">entertainment</option>
+        <option value="housing">housing</option>
+        <option value="utilities">utility</option>
+        <option value="personal">personal</option>
+        <option value="other" class="vTextField">Other</option></select>
+        <button type="submit" class="btn btn-danger">Save Changes</button>
+    </form>
+</div>
+{% endblock %}
+</main>
